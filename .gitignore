@@ -1,0 +1,9 @@
+keys/
+.terraform/
+*.tfstate*
+*tfstate.backup
+creds.auto.tfvars
+*.bak
+*.retry
+aws_keys.yml
+.vscode

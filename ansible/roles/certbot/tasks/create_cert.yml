@@ -1,0 +1,15 @@
+---
+# tasks file for create certificate by certbot
+
+- name: Check if certificate already exists.
+  stat:
+    path: /etc/letsencrypt/live/{{ ansible_nodename }}/cert.pem
+  register: letsencrypt_cert
+
+- name: Generate new certificate if one doesn't exist.
+  command: "certbot certonly --dns-route53 --noninteractive --agree-tos -m {{ item.0 }}  -d {{ item[1] }},*.{{ item[1] }} --server {{ item[2] }}"
+  when: not letsencrypt_cert.stat.exists
+  with_nested: 
+    - "{{ cert.email_address }}"
+    - "{{ cert.CN }}"
+    - "{{ acme_directory }}"

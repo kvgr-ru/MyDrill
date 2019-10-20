@@ -1,0 +1,18 @@
+---
+# tasks file for common
+
+- name: install epel repo
+  yum:
+    name: epel-release
+    state: present
+
+- name: update all
+  yum:
+    name: '*'
+    state: present
+
+- name: install policycoreutils-python
+  yum:
+    name:
+      - policycoreutils-python
+    state: present

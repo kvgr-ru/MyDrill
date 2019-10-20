@@ -1,0 +1,35 @@
+---
+# tasks file for certbot install
+
+- name: Include aws_keys vars.
+  include_vars:
+    file: aws_keys.yml
+
+- name: Install certbot
+  yum:
+    name:  'certbot'
+    state: present
+
+- name: install the latest version of certbot-dns-route53 plugin from the epel testing repo
+  yum:
+    name: 'python2-certbot-dns-route53'
+    enablerepo: epel-testing
+    state: present
+
+- name: Create storage directory for aws keys
+  file:
+    dest: "/root/.aws"
+    owner: root
+    group: root
+    mode: 0600
+    state: directory
+
+- name: deploy aws config file
+  template:
+    src: 'aws_config.j2'
+    dest: '/root/.aws/config'
+    owner: root
+    group: root
+    mode: 0600
+  with_items:
+    - "{{ aws_keys }}"

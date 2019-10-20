@@ -1,0 +1,42 @@
+---
+# tasks file for nginx_conf
+
+- name: deploy nginx config
+  template:
+    src: 'nginx.conf.j2'
+    dest: '/etc/nginx/nginx.conf'
+  notify: restart nginx
+
+- name: deploy sites to the servers of the group web
+  template:
+    src: 'index.html.j2'
+    dest: '/var/www/{{ item }}/html/index.html'
+  with_items:
+    - "{{ ansible_nodename }}"
+  when: inventory_hostname in groups['web']
+  notify: restart nginx
+
+- name: deploy sites config to the servers of the group web
+  template:
+    src: 'server_web.conf.j2'
+    dest: '/etc/nginx/site-available/{{ item }}.conf'
+  with_items:
+    - "{{ ansible_nodename }}"
+  when: inventory_hostname in groups['web']
+
+- name: deploy sites config to the servers of the group proxy
+  template:
+    src: 'server_proxy.conf.j2'
+    dest: '/etc/nginx/site-available/{{ item }}.conf'
+  with_items:
+    - "{{ ansible_nodename }}"
+  when: inventory_hostname in groups['proxy']
+
+- name: create links from site-available to site-enabled
+  file:
+    src: '/etc/nginx/site-available/{{ item }}.conf'
+    dest: '/etc/nginx/site-enabled/{{ item }}.conf'
+    state: link
+  with_items:
+    - "{{ ansible_nodename }}"
+  notify: restart nginx

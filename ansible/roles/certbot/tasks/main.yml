@@ -1,0 +1,17 @@
+---
+# tasks file for certbot
+
+- name: Apply certbot_install tasks
+  import_tasks: install.yml
+  tags:
+    - certbot_install
+
+- name: Apply certbot_conf tasks
+  import_tasks: create_cert.yml
+  tags:
+    - certbot_conf
+
+- name: Apply renew_cron tasks
+  import_tasks: renew_cron.yml
+  tags:
+    - certbot_renew

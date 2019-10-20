@@ -1,0 +1,15 @@
+---
+# tasks file for renew certificate by certbot
+
+- name: Add cron job for certbot certificate renewal.
+  cron:
+    name: Certbot automatic renewal.
+    job: "certbot renew --quiet --no-self-upgrade"
+    minute: "00"
+    hour: "00"
+
+- name: deploy renewal-hook
+  template:
+    src: 'renewal_hook.j2'
+    dest: '/etc/letsencrypt/renewal-hooks/deploy/01-reload-nginx.sh'
+    mode: 0755

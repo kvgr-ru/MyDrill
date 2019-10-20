@@ -1,0 +1,13 @@
+---
+# vars file for letsencrypt_conf
+
+#acme_directory: https://acme-staging-v02.api.letsencrypt.org/directory
+acme_directory: https://acme-v02.api.letsencrypt.org/directory
+cert:
+  CN: "{{ ansible_nodename }}"
+  organization_name: "kvgr"
+  email_address: "admin@{{ ansible_dns.search[0] }}"
+  subject_alt_name:
+    - 'DNS:{{ ansible_nodename }}'
+    - 'DNS:www.{{ ansible_nodename }}'
+remaining_days: 10
